@@ -625,20 +625,22 @@
         let teamsDatabase = {};
         let majorsDatabase = {};
 
-        let response;
-        let data;
         async function fetchData() {
-            response = await fetch("https://pastebin.com/raw/JSRqDFU3");
-            data = await response.json();
+            try {
+                const response = await fetch("https://corsproxy.io/?url=https://pastebin.com/raw/g3k72aSk");
+                
+                const json = await response.json();
+                
+                mapBanners = json["mapBanners"];
+                teamsDatabase = json["teams"];
+                majorsDatabase = json["majors"];
+
+                initWebsite();
+            } catch (error) {
+                console.error("Failed to load databases:", error);
+            }
         }
         fetchData();
-        const json = JSON.parse(data);
-
-        // Object.entries(json["mapBanners"]).forEach(([key, value]) => {mapBanners[key] = value;});
-        // Object.entries(json["teams"]).forEach(([key, value]) => {mapBanners[key] = value;});
-        mapBanners = json["mapBanners"];
-        teamsDatabase = json["teams"];
-        majorsDatabase = json["majors"];
 
         function getTeam(teamId) {
             const id = teamId ? teamId.toLowerCase().trim() : "tbd";
@@ -914,15 +916,17 @@
             }
         }
 
-        renderHub();
+        function initWebsite() {
+            renderHub();
 
-        const resizeObserver = new ResizeObserver(() => {
-            if (window.activeMajorId) {
-                scaleBracket();
-                requestAnimationFrame(() => drawConnectors(window.activeMajorId));
-            }
-        });
-        resizeObserver.observe(document.getElementById('main-container'));
+            const resizeObserver = new ResizeObserver(() => {
+                if (window.activeMajorId) {
+                    scaleBracket();
+                    requestAnimationFrame(() => drawConnectors(window.activeMajorId));
+                }
+            });
+            resizeObserver.observe(document.getElementById('main-container'));
+        }
     </script>
 </body>
 </html>
