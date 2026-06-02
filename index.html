@@ -621,29 +621,24 @@
         // =========================================================================
         // ПОЛНЫЙ СПИСОК БАННЕРОВ КАРТ
         // =========================================================================
-        const MAP_BANNERS = {
-            "mirage":  "https://images.cybersport.ru/images/og-jpg/plain/b3/b3b4f3a3-4f0d-4e2b-91b8-b968f9de147c.png",
-            "inferno": "https://www.goha.ru/s/E:Bv/mj/bvrOu47FLl.jpg",
-            "nuke":    "https://bitskins.com/blog/content/images/2024/03/20240328192936_1.jpg",
-            "ancient": "https://img-cdn.hltv.org/gallerypicture/2kA0ZlU0R7ogCPLA92nFnH.jpg?auto=compress&ixlib=java-2.1.0&q=75&w=1600&s=efac77bd0ea89b2fccee77ccd5e01413",
-            "anubis":  "https://images.cybersport.ru/images/og-jpg/plain/5c/5ceb7d4b-8017-4a8b-a1b2-fc2e93deda2f.jpg",
-            "dust2":   "https://steamuserimages-a.akamaihd.net/ugc/945097211121617379/F11F1E613998737BDC1F9269D25DA59D104CB7B9/",
-            "vertigo": "https://images.cybersport.ru/images/og-jpg/plain/09/09864af1-e4de-4a7e-b629-37690f3f889c.png",
-            "default": "https://www.hltv.org/images/hotmatch/map_default.png"
-        };
+        let mapBanners = {};
+        let teamsDatabase = {};
+        let majorsDatabase = {};
 
-        const teamsDatabase = {
-            "ego":       { name: "64984", logo: "https://beeimg.com/images/o33218178421.png" }, 
-            "nariki":    { name: "pavidlo", logo: "https://beeimg.com/images/q79021879673.png" },
-            "jamm":      { name: "jamm", logo: "https://beeimg.com/images/w42168908654.png" },
-            "blackboys": { name: "BLACK | BOYSs", logo: "https://beeimg.com/images/i98018956232.png" },
-            "tbd":       { name: "TBD", logo: "" },
-            "kirill":       { name: "Kirill" },
-            "alexey":       { name: "Alexey" },
-            "alisa":       { name: "Alisa" },
-            "stas":       { name: "Stas" },
-            "grisha":       { name: "Grisha" }
-        };
+        let response;
+        let data;
+        async function fetchData() {
+            response = await fetch("https://pastebin.com/raw/JSRqDFU3");
+            data = await response.json();
+        }
+        fetchData();
+        const json = JSON.parse(data);
+
+        // Object.entries(json["mapBanners"]).forEach(([key, value]) => {mapBanners[key] = value;});
+        // Object.entries(json["teams"]).forEach(([key, value]) => {mapBanners[key] = value;});
+        mapBanners = json["mapBanners"];
+        teamsDatabase = json["teams"];
+        majorsDatabase = json["majors"];
 
         function getTeam(teamId) {
             const id = teamId ? teamId.toLowerCase().trim() : "tbd";
@@ -662,87 +657,6 @@
             }
             return { name: "TBD", logo: `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232d3741'><text x='50%' y='65%' font-size='14' font-weight='bold' text-anchor='middle'>?</text></svg>` };
         }
-
-        let majorsDatabase = {
-            "tungha": {
-                name: "Tungha - June 2026",
-                winnerId: "tbd", 
-                date: "10-12 June 2026",
-                bracket: [
-                    {
-                        roundName: "Четвертьфинал",
-                        matches: [
-                            { id: "tf1", t1: "ego", s1: 0, t2: "tbd",    s2: 0, maps: [] },
-                            { id: "tf2", t1: "nariki", s1: 0, t2: "tbd",    s2: 0, maps: [] },
-                            { id: "tf3", t1: "jamm", s1: 0, t2: "tbd",    s2: 0, maps: [] },
-                            { id: "tf3", t1: "tbd", s1: 0, t2: "tbd",    s2: 0, maps: [] }
-                        ]
-                    },
-                    {
-                        roundName: "Полуфинал",
-                        matches: [
-                            { id: "sf1", t1: "tbd", s1: 0, t2: "tbd",    s2: 0, maps: [] },
-                            { id: "sf2", t1: "tbd", s1: 0, t2: "tbd",    s2: 0, maps: [] }
-                        ]
-                    },
-                    {
-                        roundName: "Финал",
-                        matches: [
-                            { id: "f1",  t1: "tbd", s1: 0, t2: "tbd",    s2: 0, maps: [] }
-                        ]
-                    }
-                ]
-            },
-            "blacklotus": {
-                name: "Black lotus - June 2026",
-                winnerId: "tbd", 
-                date: "3 June 2026",
-                bracket: [
-                    {
-                        roundName: "Полуфинал",
-                        matches: [
-                            { id: "sf1", t1: "ego", s1: 0, t2: "tbd",    s2: 0, maps: [] },
-                            { id: "sf2", t1: "jamm", s1: 0, t2: "nariki",    s2: 0, maps: [] }
-                        ]
-                    },
-                    {
-                        roundName: "Финал",
-                        matches: [
-                            { id: "f1",  t1: "tbd", s1: 0, t2: "tbd",    s2: 0, maps: [] }
-                        ]
-                    }
-                ]
-            },
-            "kingme": {
-                name: "King me - End May 2026",
-                winnerId: "nariki", 
-                date: "1 June 2026",
-                bracket: [
-                    {
-                        roundName: "Полуфинал",
-                        matches: [
-                            { id: "sf1", t1: "ego", s1: 2, t2: "nariki",    s2: 0, maps: [
-                                {mapCode: "ancient", r1: 13, r2: 7, demoUrl: "https://drive.google.com/file/d/1byYGIn_Lj1upJqBGPslaYXo_qtkEE0Ep/view?usp=sharing"},
-                                {mapCode: "dust2", r1: 13, r2: 11, demoUrl: "https://drive.google.com/file/d/1TVxfHKtmb_r2Uu2cv771RoayBK5ld-dy/view?usp=sharing"}
-                            ] },
-                            { id: "sf2", t1: "blackboys", s1: 0, t2: "nariki",    s2: 2, maps: [
-                                {mapCode: "ancient", r1: 4, r2: 13, demoUrl: "https://drive.google.com/file/d/1wXXOjeMczE1ApPytBNOLGjSehd7rfExY/view?usp=sharing"}
-                            ] }
-                        ]
-                    },
-                    {
-                        roundName: "Финал",
-                        matches: [
-                            { id: "f1",  t1: "ego", s1: 1, t2: "nariki",    s2: 2, maps: [
-                                {mapCode: "inferno", r1: 13, r2: 8, demoUrl: "https://drive.google.com/file/d/1FMxOIZ83mem92ESD7IYIkSW9ZTnvVLlG/view?usp=sharing"},
-                                {mapCode: "anubis", r1: 8, r2: 13, demoUrl: "https://drive.google.com/file/d/12pcRVJMDcGxcfgSr9yO3z5ABexCi9zPv/view?usp=sharing"},
-                                {mapCode: "ancient", r1: 7, r2: 13, demoUrl: "https://drive.google.com/file/d/1FqJt_fQ_Y_tPxmcYbHC6M2Uj9CiX1vy5/view?usp=sharing"}
-                            ] }
-                        ]
-                    }
-                ]
-            }
-        };
 
         function renderHub() {
             const container = document.getElementById('hub-cards-wrapper');
@@ -813,7 +727,7 @@
                         let rowsHtml = '';
                         match.maps.forEach(map => {
                             const mapWinnerClass = map.r1 > map.r2 ? 'w1' : 'w2';
-                            const bannerUrl = MAP_BANNERS[map.mapCode] || MAP_BANNERS["default"];
+                            const bannerUrl = mapBanners[map.mapCode] || mapBanners["default"];
 
                             let mapDownloadBtnHtml = '';
                             if (map.demoUrl) {
