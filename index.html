@@ -62,7 +62,7 @@
         .btn-discord:hover {
             background: var(--cs2-discord);
             box-shadow: 0 0 25px rgba(88, 101, 242, 0.5);
-            transform: translateY(-2px);
+            transform: scale(0.05);
         }
 
         .btn-discord svg {
@@ -669,7 +669,8 @@
 
         async function fetchData() {
             try {
-                const response = await fetch("https://gist.githubusercontent.com/n-major/10cdc92d9477615018a5e37069674d29/raw/nmajor.json");
+                const response = await fetch("https://gist.githubusercontent.com/n-major/10cdc92d9477615018a5e37069674d29/raw/b10a388a2dca0c13891571ccd4bb94857193da49/nmajor.json");
+                // const response = await fetch("https://gist.githubusercontent.com/n-major/10cdc92d9477615018a5e37069674d29/raw/nmajor.json");
                 
                 const json = await response.json();
                 
@@ -688,6 +689,7 @@
             const id = teamId ? teamId.toLowerCase().trim() : "tbd";
             if (id === "tbd") {
                 return { 
+                    content: [], 
                     name: "TBD", 
                     logo: `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23525b62'><text x='50%' y='65%' font-size='14' font-weight='bold' text-anchor='middle'>?</text></svg>` 
                 };
@@ -699,7 +701,7 @@
                 }
                 return teamsDatabase[id];
             }
-            return { name: "TBD", logo: `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232d3741'><text x='50%' y='65%' font-size='14' font-weight='bold' text-anchor='middle'>?</text></svg>` };
+            return { content: [], name: "TBD", logo: `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232d3741'><text x='50%' y='65%' font-size='14' font-weight='bold' text-anchor='middle'>?</text></svg>` };
         }
 
         function renderHub() {
@@ -743,7 +745,7 @@
             document.getElementById('bracket-view').classList.remove('active');
             document.getElementById('hub-view').classList.remove('hidden');
         }
-
+        
         function renderActiveBracket(id) {
             const currentMajor = majorsDatabase[id];
             document.getElementById('major-title').innerText = currentMajor.name;
@@ -809,7 +811,7 @@
                     const matchHtml = `
                         <div class="match-slot">
                             <div class="match-box ${matchStatusClass}" id="match-box-${match.id}">
-                                
+
                                 ${mapsOverlayHtml}
 
                                 <div class="match-team ${t1Class}">
