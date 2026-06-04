@@ -7,15 +7,17 @@
     <meta name="description" content="Любительские турнир-мажоры по знаменитой игре Counter-Strike 2.">
     <style>
         :root {
-            --cs2-bg: #12161a;
-            --cs2-card: #1b2228;
-            --cs2-card-hover: #232b32;
-            --cs2-border: #2d3741;
-            --cs2-accent: #de9b35; 
-            --cs2-text: #929a9e;
-            --cs2-text-light: #ffffff;
-            --cs2-loser: #525b62;
-            --cs2-discord: #5865F2;
+            /* FACEIT Red Design System Colors */
+            --faceit-bg: #1f1f22;
+            --faceit-black: #121214;
+            --faceit-card: #161618;
+            --faceit-border: #2a2a2e;
+            --faceit-red: #ff5500; 
+            --faceit-text-dark: #6c6c78;
+            --faceit-text-muted: #a5a5b4;
+            --faceit-text-light: #f5f5f7;
+            --faceit-discord: #5865F2;
+            --header-height: 60px;
         }
 
         * { 
@@ -27,51 +29,96 @@
         }
         
         body {
-            background-color: var(--cs2-bg);
-            background-image: linear-gradient(180deg, #161c22 0%, #0d1013 100%);
-            color: var(--cs2-text-light);
-            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--faceit-bg);
+            color: var(--faceit-text-light);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             height: 100vh; 
             width: 100vw;
             overflow: hidden; 
             position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
+        /* MINIMALISTIC FACEIT HEADER */
+        .site-header {
+            height: var(--header-height);
+            width: 100%;
+            background: var(--faceit-black);
+            border-bottom: 1px solid var(--faceit-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            position: relative;
+            z-index: 50;
+            flex-shrink: 0;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-logo-mark {
+            width: 4px;
+            height: 20px;
+            background: var(--faceit-red);
+            border-radius: 2px;
+        }
+
+        .header-brand {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 900;
+            color: var(--faceit-text-light);
+        }
+
+        .header-brand span {
+            color: var(--faceit-red);
+        }
+
+        /* Minimalistic Discord Action Button */
         .btn-discord {
-            position: absolute;
-            top: 30px;
-            right: 40px;
-            background: rgba(88, 101, 242, 0.1);
-            border: 2px solid var(--cs2-discord);
-            color: #fff;
-            padding: 12px 24px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            border-radius: 8px;
+            background: transparent;
+            border: 1px solid var(--faceit-border);
+            color: var(--faceit-text-light);
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-radius: 4px;
             cursor: pointer;
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 10px;
-            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-            z-index: 20;
-            box-shadow: 0 4px 15px rgba(88, 101, 242, 0.2);
+            gap: 8px;
+            transition: all 0.2s ease;
         }
 
         .btn-discord:hover {
-            background: var(--cs2-discord);
-            box-shadow: 0 0 25px rgba(88, 101, 242, 0.5);
-            transform: scale(0.05);
+            border-color: var(--faceit-discord);
+            background: var(--faceit-discord);
         }
 
         .btn-discord svg {
-            width: 20px;
-            height: 20px;
+            width: 14px;
+            height: 14px;
             fill: currentColor;
         }
 
-        /* ЭКРАН ВЫБОРА МАЖОРА (HUB) */
+        /* MAIN VIEWS WRAPPER */
+        .view-container {
+            position: relative;
+            flex-grow: 1;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        /* HUB SCREEN ELEMENTS */
         .hub-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -81,78 +128,132 @@
             justify-content: center;
             padding: 40px;
             z-index: 10;
-            transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), transform 0.4s ease;
+            transition: opacity 0.3s ease, transform 0.3s ease;
             opacity: 1;
             transform: scale(1);
         }
 
         .hub-screen.hidden {
             opacity: 0;
-            transform: scale(1.05);
+            transform: scale(0.98);
             pointer-events: none;
         }
 
         .hub-title {
-            font-size: 2.5rem;
+            font-size: 2rem;
             text-transform: uppercase;
-            letter-spacing: 6px;
-            font-weight: 900;
-            margin-bottom: 10px;
-            background: linear-gradient(180deg, #fff 0%, var(--cs2-text) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            color: var(--faceit-text-light);
         }
 
         .hub-subtitle {
-            color: var(--cs2-accent);
-            letter-spacing: 8px;
-            font-size: 1rem;
-            margin-bottom: 50px;
+            color: var(--faceit-red);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.75rem;
+            margin-bottom: 40px;
             font-weight: 700;
+        }
+
+        /* HUB VIEWPORT AND VISUAL HINT FADES */
+        .hub-viewport-container {
+            position: relative;
+            width: 100%;
+            max-width: 1400px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Scroll indicator hints built into container styling */
+        .hub-viewport-container::before,
+        .hub-viewport-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 60px;
+            pointer-events: none;
+            z-index: 25;
+            transition: opacity 0.25s ease;
+            opacity: 0;
+        }
+
+        .hub-viewport-container::before {
+            left: 0;
+            background: linear-gradient(to right, var(--faceit-bg) 15%, transparent);
+        }
+
+        .hub-viewport-container::after {
+            right: 0;
+            background: linear-gradient(to left, var(--faceit-bg) 15%, transparent);
+        }
+
+        /* Toggled via JavaScript depending on actual scroll state values */
+        .hub-viewport-container.can-scroll-left::before { opacity: 1; }
+        .hub-viewport-container.can-scroll-right::after { opacity: 1; }
+
+        .cards-scroll-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            /* Using auto behavior driven entirely by high frequency scroll intervals for optimal tracking */
+            scroll-behavior: auto; 
+            display: flex;
+            justify-content: flex-start;
+            padding: 20px 0;
+        }
+
+        /* Hide Scrollbar completely across engines */
+        .cards-scroll-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+        .cards-scroll-wrapper {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
         }
 
         .cards-container {
             display: flex;
-            gap: 30px;
-            max-width: 1400px;
-            width: 100%;
-            justify-content: center;
+            gap: 20px;
+            /* Forces default left-bound sorting layout rule priority mapping */
+            margin: 0;
+            padding: 0 40px;
             align-items: center;
         }
 
+        /* Flat, Sharp FACEIT Style Card Layout */
         .major-vertical-card {
-            background: linear-gradient(180deg, #1d252d 0%, #13191e 100%);
-            border: 2px solid var(--cs2-border);
-            border-radius: 12px;
-            width: 280px;
-            height: 450px;
-            padding: 30px 20px;
+            background: var(--faceit-card);
+            border: 1px solid var(--faceit-border);
+            border-radius: 4px;
+            width: 260px;
+            height: 420px;
+            padding: 24px 16px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
             cursor: pointer;
             position: relative;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+            flex-shrink: 0;
         }
 
         .major-vertical-card:hover {
-            border-color: var(--cs2-accent);
-            transform: translateY(-10px);
-            box-shadow: 0 0 30px rgba(222, 155, 53, 0.2);
-            background: linear-gradient(180deg, #242e38 0%, #161e24 100%);
+            border-color: var(--faceit-red);
+            background: var(--faceit-black);
         }
 
         .card-major-name {
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 800;
-            color: #fff;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: var(--faceit-text-light);
             text-align: center;
             line-height: 1.4;
-            height: 60px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -164,70 +265,67 @@
             align-items: center;
             justify-content: center;
             flex-grow: 1;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
             width: 100%;
         }
 
         .card-winner-logo {
-            width: 110px;
-            height: 110px;
+            width: 90px;
+            height: 90px;
             object-fit: contain;
-            margin-bottom: 15px;
-            filter: drop-shadow(0 0 15px rgba(0,0,0,0.5));
-            transition: transform 0.3s ease;
+            margin-bottom: 16px;
+            transition: transform 0.2s ease;
         }
 
         .card-tbd-logo {
-            width: 110px;
-            height: 110px;
+            width: 90px;
+            height: 90px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(45, 55, 65, 0.3);
-            border: 2px dashed rgba(222, 155, 53, 0.4);
+            background: transparent;
+            border: 1px dashed var(--faceit-border);
             border-radius: 50%;
-            color: var(--cs2-accent);
-            font-size: 3.5rem;
-            font-weight: 900;
-            margin-bottom: 15px;
-            text-shadow: 0 0 15px rgba(222, 155, 53, 0.6);
-            box-shadow: inset 0 0 20px rgba(222, 155, 53, 0.1);
+            color: var(--faceit-text-dark);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
         }
 
         .major-vertical-card:hover .card-winner-logo {
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
 
         .card-winner-name {
-            font-size: 1.5rem;
-            font-weight: 900;
-            letter-spacing: 1px;
-            color: var(--cs2-accent);
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--faceit-text-light);
         }
 
         .card-date-label {
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            color: var(--cs2-text);
-            font-weight: 700;
-            border-top: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            color: var(--faceit-text-dark);
+            font-weight: 600;
+            border-top: 1px solid var(--faceit-border);
             width: 100%;
             text-align: center;
-            padding-top: 15px;
+            padding-top: 16px;
         }
 
-        /* ЭКРАН ТУРНИРНОЙ СЕТКИ */
+        /* BRACKET TOURNAMENT VIEW */
         .bracket-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 30px;
+            padding: 20px 30px;
             opacity: 0;
-            transform: scale(0.95);
+            transform: scale(1.02);
             pointer-events: none;
-            transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), transform 0.4s ease;
+            transition: opacity 0.3s ease, transform 0.3s ease;
             z-index: 5;
         }
 
@@ -237,18 +335,28 @@
             pointer-events: all;
         }
 
+        .bracket-header-nav {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
         .btn-back {
             position: absolute;
-            top: 30px;
-            left: 40px;
-            background: #1b2228;
-            border: 2px solid var(--cs2-border);
-            color: var(--cs2-text);
-            width: 54px;
-            height: 54px;
-            font-size: 1.6rem;
-            font-weight: bold;
-            border-radius: 8px;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--faceit-card);
+            border: 1px solid var(--faceit-border);
+            color: var(--faceit-text-muted);
+            width: 38px;
+            height: 38px;
+            font-size: 1.1rem;
+            border-radius: 4px;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
@@ -258,32 +366,30 @@
         }
 
         .btn-back:hover {
-            color: #fff;
-            border-color: var(--cs2-accent);
-            background: var(--cs2-card-hover);
-            box-shadow: 0 0 15px rgba(222, 155, 53, 0.2);
+            color: var(--faceit-text-light);
+            border-color: var(--faceit-text-muted);
+            background: var(--faceit-black);
+        }
+
+        .title-block {
+            text-align: center;
         }
 
         h1 {
-            font-size: 2.2rem;
+            font-size: 1.6rem;
             text-transform: uppercase;
-            letter-spacing: 4px;
+            letter-spacing: 1px;
             font-weight: 800;
-            background: linear-gradient(45deg, #fff, var(--cs2-text));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            flex-shrink: 0;
-            margin-bottom: 5px;
-            margin-top: 10px;
+            color: var(--faceit-text-light);
+            margin-bottom: 2px;
         }
 
         .subtitle {
-            color: var(--cs2-accent);
-            letter-spacing: 6px;
-            font-size: 0.9rem;
-            margin-bottom: 25px;
-            font-weight: 600;
-            flex-shrink: 0;
+            color: var(--faceit-red);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.7rem;
+            font-weight: 700;
         }
 
         .tournament-container-relative {
@@ -307,7 +413,7 @@
         .tournament-wrapper {
             display: flex;
             align-items: stretch; 
-            gap: 100px; 
+            gap: 70px; 
             position: relative;
             z-index: 2;
             width: 1420px;
@@ -320,21 +426,21 @@
         .round-column {
             display: flex;
             flex-direction: column;
-            width: 290px;
+            width: 280px;
             position: relative;
             z-index: 3;
         }
 
         .round-title {
-            text-align: center;
+            text-align: left;
             text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 2px;
-            color: var(--cs2-text);
-            margin-bottom: 10px;
-            font-weight: bold;
-            border-bottom: 1px solid var(--cs2-border);
-            padding-bottom: 5px;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            color: var(--faceit-text-muted);
+            margin-bottom: 15px;
+            font-weight: 700;
+            border-bottom: 1px solid var(--faceit-border);
+            padding-bottom: 8px;
             flex-shrink: 0;
         }
 
@@ -343,28 +449,26 @@
             flex-direction: column;
             justify-content: center;
             flex: 1; 
-            padding: 10px 0; 
+            padding: 8px 0; 
         }
 
-        /* КАРТОЧКА МАТЧА */
+        /* MINIMAL MATCH BOXES */
         .match-box {
-            background: var(--cs2-card);
-            border: 1px solid var(--cs2-border);
-            border-radius: 6px;
+            background: var(--faceit-card);
+            border: 1px solid var(--faceit-border);
+            border-radius: 4px;
             overflow: hidden;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.5);
-            transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.2s ease, border-color 0.2s ease;
+            transition: border-color 0.15s ease, background-color 0.15s ease;
             position: relative;
-            height: 130px; 
+            height: 110px; 
             display: flex;
             flex-direction: column;
             flex-shrink: 0;
         }
 
         .match-box:hover {
-            background: var(--cs2-card-hover);
-            border-color: #414f5c;
-            transform: scale(1.04);
+            background: var(--faceit-black);
+            border-color: var(--faceit-text-dark);
             z-index: 10;
         }
 
@@ -372,24 +476,24 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding-left: 18px;
-            height: 64px; 
+            padding-left: 14px;
+            height: 55px; 
             position: relative;
         }
         
         .match-team:first-child {
-            border-bottom: 2px solid rgba(255,255,255,0.03); 
+            border-bottom: 1px solid var(--faceit-border); 
         }
 
         .team-details { 
             display: flex; 
             align-items: center; 
-            gap: 14px;
+            gap: 12px;
             flex-grow: 1;
         }
         
-        .team-logo { width: 32px; height: 32px; object-fit: contain; }
-        .team-name { font-size: 1rem; font-weight: 700; letter-spacing: 0.5px; }
+        .team-logo { width: 24px; height: 24px; object-fit: contain; }
+        .team-name { font-size: 0.9rem; font-weight: 600; color: var(--faceit-text-light); }
         
         .score-wrapper {
             display: flex;
@@ -399,69 +503,79 @@
         }
 
         .team-score {
-            font-size: 1.2rem;
-            font-weight: 800;
-            background: #14181c;
-            height: 64px;
-            width: 55px;
+            font-size: 1rem;
+            font-weight: 700;
+            background: rgba(0, 0, 0, 0.15);
+            height: 55px;
+            width: 45px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-left: 1px solid var(--cs2-border);
-            color: var(--cs2-text);
+            border-left: 1px solid var(--faceit-border);
+            color: var(--faceit-text-muted);
         }
 
-        /* УМЕНЬШЕННАЯ ПАНЕЛЬ С КАРТАМИ */
+        /* SLIDE-OUT MAP DETAILS OVERLAY */
         .match-maps-overlay {
             position: absolute;
             top: 0;
-            right: -100%; 
-            width: 150px; /* Сделали более компактным (было 210px) */
+            right: -140px; 
+            width: 140px; 
             height: 100%;
-            background: #111518;
-            border-left: 2px solid var(--cs2-accent);
+            background: var(--faceit-black);
+            border-left: 1px solid var(--faceit-red);
             display: flex;
             flex-direction: column;
             justify-content: stretch;
             z-index: 6;
-            transition: right 0.25s cubic-bezier(0.25, 1, 0.5, 1);
-            box-shadow: -5px 0 20px rgba(0,0,0,0.6);
+            transition: right 0.2s ease;
         }
 
-        /* Выдвижение оверлея */
         .match-box.finished:hover .match-maps-overlay {
             right: 0;
         }
 
-        /* Строка карты */
         .map-round-row {
             flex: 1;
             position: relative;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 0 8px;
+            border-bottom: 1px solid var(--faceit-border);
+            padding: 4px 6px;
         }
+        
         .map-round-row:last-child {
             border-bottom: none;
         }
 
-        /* Задний фон-баннер для карты */
         .map-bg-banner {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             object-fit: cover;
-            opacity: 0.2; 
+            opacity: 0.08; 
             z-index: 1;
-            transition: opacity 0.2s ease;
+            transition: opacity 0.15s ease;
         }
+        
         .map-round-row:hover .map-bg-banner {
-            opacity: 0.35; 
+            opacity: 0.18; 
         }
 
-        /* Контент внутри строки (команды и счет) */
+        .map-mini-name {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: #d1d1d6;
+            z-index: 5;
+            letter-spacing: 0.8px;
+            text-align: center;
+            margin-top: -2px;
+            text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.9);
+        }
+
         .map-row-content {
             position: relative;
             z-index: 2;
@@ -469,209 +583,193 @@
             align-items: center;
             justify-content: center;
             gap: 5px;
-            font-size: 0.85rem;
-            font-weight: 800;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.9);
             width: 100%;
+            margin-top: 3px; 
         }
 
         .map-mini-logo {
-            width: 16px;
-            height: 16px;
+            width: 13px;
+            height: 13px;
             object-fit: contain;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
         }
 
         .map-score-text {
             color: #ffffff;
-            letter-spacing: 0.5px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 0.2px;
             white-space: nowrap;
+            text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.9);
         }
 
-        /* Название карты уехало в левый верхний угол */
-        .map-mini-name {
-            position: absolute;
-            top: 2px;
-            left: 6px;
-            font-size: 0.55rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--cs2-text);
-            z-index: 2;
-            opacity: 0.8;
-        }
-
-        /* АБСОЛЮТНАЯ КНОПКА СКАЧИВАНИЯ (в правом верхнем углу карты) */
         .map-demo-download-btn {
             position: absolute;
-            top: 3px;
+            top: 2px;
             right: 4px;
             z-index: 3;
-            width: 18px;
-            height: 18px;
-            background: rgba(20, 24, 28, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
+            width: 14px;
+            height: 14px;
+            background: transparent;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--cs2-text);
+            color: var(--faceit-text-dark);
             text-decoration: none;
-            transition: all 0.2s ease;
+            transition: color 0.15s ease;
         }
 
         .map-demo-download-btn:hover {
-            color: #fff;
-            border-color: var(--cs2-accent);
-            background: var(--cs2-accent);
-            box-shadow: 0 0 8px rgba(222, 155, 53, 0.5);
+            color: var(--faceit-red);
         }
 
         .map-demo-download-btn svg {
-            width: 10px;
-            height: 10px;
+            width: 9px;
+            height: 9px;
             fill: currentColor;
         }
 
-        /* Цвета для счета победителей карт */
-        .map-round-row.w1 .map-score-text { color: var(--cs2-accent); }
-        .map-round-row.w2 .map-score-text { color: var(--cs2-accent); }
-        .map-round-row.w1 .map-score-text span:last-child { color: #fff; }
-        .map-round-row.w2 .map-score-text span:first-child { color: #fff; }
+        /* HIGHLIGHTING WINNERS / LOSERS MECHANICS */
+        .map-round-row.w1 .map-score-text { color: var(--faceit-red); }
+        .map-round-row.w2 .map-score-text { color: var(--faceit-red); }
+        .map-round-row.w1 .map-score-text span:last-child { color: #ffffff; }
+        .map-round-row.w2 .map-score-text span:first-child { color: #ffffff; }
 
-        .match-box.finished .loser .team-name { color: var(--cs2-loser); }
-        .match-box.finished .loser .team-logo { opacity: 0.3; filter: grayscale(1); }
-        .match-box.finished .winner .team-score { color: var(--cs2-accent); background: #1d2127; }
+        .match-box.finished .loser .team-name { color: var(--faceit-text-dark); }
+        .match-box.finished .loser .team-logo { opacity: 0.2; filter: grayscale(1); }
+        .match-box.finished .winner .team-score { color: var(--faceit-red); font-weight: 800; }
         
+        /* Clean minimal indicator border for winner row instead of heavy overlays */
         .match-box.finished .winner::before {
             content: '';
             position: absolute;
             left: 0;
-            width: 4px;
-            height: 64px;
-            background: var(--cs2-accent);
+            width: 3px;
+            height: 55px;
+            background: var(--faceit-red);
         }
         .match-box.finished .winner:nth-child(1)::before { top: 0; }
         .match-box.finished .winner:nth-child(2)::before { bottom: 0; }
 
-        .match-box.upcoming .team-score { color: transparent; background: #171b1f; }
-        .match-box.upcoming .team-score::after { content: '-'; color: var(--cs2-loser); position: absolute; }
+        .match-box.upcoming .team-score { color: transparent; }
+        .match-box.upcoming .team-score::after { content: '—'; color: var(--faceit-text-dark); position: absolute; }
 
+        /* CHAMPION PRESENTATION BLOCK */
         .champion-column {
             display: flex;
             flex-direction: column;
             justify-content: center; 
-            width: 250px;
+            width: 240px;
             position: relative;
             z-index: 3;
         }
         
         .champ-box {
-            background: linear-gradient(180deg, #2a2215 0%, var(--cs2-card) 100%);
-            border: 2px solid var(--cs2-accent);
+            background: var(--faceit-card);
+            border: 1px solid var(--faceit-red);
             padding: 30px 20px;
-            border-radius: 8px;
+            border-radius: 4px;
             text-align: center;
-            box-shadow: 0 0 35px rgba(222, 155, 53, 0.25);
-            transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: background-color 0.2s ease;
             position: relative;
         }
 
         .champ-title {
-            font-size: 0.85rem;
-            color: var(--cs2-accent);
-            letter-spacing: 3px;
-            margin-bottom: 15px;
-            font-weight: bold;
+            font-size: 0.75rem;
+            color: var(--faceit-red);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            font-weight: 700;
         }
 
-
+        /* HUB DIVIDERS SYSTEM */
         .card-vertical-divider {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 450px; /* Matches your .major-vertical-card height exactly */
+            height: 420px; 
             align-self: center;
-            padding: 0 15px; /* Creates breathing room between cards */
+            padding: 0 10px; 
+            flex-shrink: 0;
         }
 
         .card-vertical-divider::before,
         .card-vertical-divider::after {
             content: '';
             flex: 1;
-            border-left: 2px dashed var(--cs2-border); /* Dashed vertical line using your theme variable */
-            transition: border-color 0.3s ease;
+            border-left: 1px solid var(--faceit-border); 
         }
 
-        .card-vertical-divider::before {
-            margin-bottom: 15px; /* Space between top line and text */
-        }
-
-        .card-vertical-divider::after {
-            margin-top: 15px; /* Space between text and bottom line */
-        }
-
-        /* Hover effect synced with your design specs */
-        .card-vertical-divider:hover::before,
-        .card-vertical-divider:hover::after {
-            border-color: var(--cs2-accent);
-        }
+        .card-vertical-divider::before { margin-bottom: 12px; }
+        .card-vertical-divider::after { margin-top: 12px; }
 
         .card-vertical-divider span {
-            font-size: 0.8rem;
-            font-weight: 800;
+            font-size: 0.7rem;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--cs2-text);
-            
-            /* Perfect Top-to-Bottom Rotation styling */
+            letter-spacing: 1px;
+            color: var(--faceit-text-dark);
             writing-mode: vertical-rl; 
             transform: rotate(180deg); 
             white-space: nowrap;
-            padding: 5px 0;
+            padding: 4px 0;
         }
     </style>
 </head>
 <body>
 
-    <div class="hub-screen" id="hub-view">
+    <header class="site-header">
+        <div class="header-left">
+            <div class="header-logo-mark"></div>
+            <div class="header-brand">N<span>Major</span></div>
+        </div>
         <a href="https://discord.gg/zm2UPepfz" target="_blank" class="btn-discord">
             <svg viewBox="0 0 127.14 96.36">
                 <path d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.86,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a77.7,77.7,0,0,0,6.63-10.85,68.43,68.43,0,0,1-10.43-5c.87-.64,1.72-1.31,2.53-2a75.49,75.49,0,0,0,72.77,0c.81.71,1.66,1.38,2.53,2a68.43,68.43,0,0,1-10.43,5,77.7,77.7,0,0,0,6.63,10.85,105.73,105.73,0,0,0,31-18.83C129.87,49.92,123.82,27.13,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.83,46,53.83,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.07,46,96.07,53,91,65.69,84.69,65.69Z"/>
             </svg>
             Подать заявку
         </a>
-        <div class="hub-title">Select Championship</div>
-        <div class="hub-subtitle">Champions Stage Hub</div>
-        <div class="cards-container" id="hub-cards-wrapper"></div>
-    </div>
+    </header>
 
-    <div class="bracket-screen" id="bracket-view">
-        <button class="btn-back" onclick="backToHub()">←</button>
-        <h1 id="major-title">Загрузка...</h1>
-        <div class="subtitle">Champions Stage</div>
+    <div class="view-container">
+        <div class="hub-screen" id="hub-view">
+            <div class="hub-title">Select Championship</div>
+            <div class="hub-subtitle">Champions Stage Hub</div>
+            
+            <!-- NEW: Modified hint viewport parent box wrapper -->
+            <div class="hub-viewport-container" id="hint-wrapper">
+                <div class="cards-scroll-wrapper" id="scroll-zone">
+                    <div class="cards-container" id="hub-cards-wrapper"></div>
+                </div>
+            </div>
+        </div>
 
-        <div class="tournament-container-relative" id="main-container">
-            <div class="tournament-wrapper" id="dynamic-bracket">
-                <canvas id="bracket-canvas"></canvas>
+        <div class="bracket-screen" id="bracket-view">
+            <div class="bracket-header-nav">
+                <button class="btn-back" onclick="backToHub()">←</button>
+                <div class="title-block">
+                    <h1 id="major-title">Загрузка...</h1>
+                    <div class="subtitle">Champions Stage</div>
+                </div>
+            </div>
+
+            <div class="tournament-container-relative" id="main-container">
+                <div class="tournament-wrapper" id="dynamic-bracket">
+                    <canvas id="bracket-canvas"></canvas>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // =========================================================================
-        // ПОЛНЫЙ СПИСОК БАННЕРОВ КАРТ
-        // =========================================================================
         let mapBanners = {};
         let teamsDatabase = {};
         let majorsDatabase = {};
 
         async function fetchData() {
             try {
-                // const response = await fetch("https://gist.githubusercontent.com/n-major/10cdc92d9477615018a5e37069674d29/raw/b10a388a2dca0c13891571ccd4bb94857193da49/nmajor.json");
                 const response = await fetch("https://gist.githubusercontent.com/n-major/10cdc92d9477615018a5e37069674d29/raw/nmajor.json");
-                
                 const json = await response.json();
                 
                 mapBanners = json["mapBanners"];
@@ -691,17 +789,17 @@
                 return { 
                     content: [], 
                     name: "TBD", 
-                    logo: `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23525b62'><text x='50%' y='65%' font-size='14' font-weight='bold' text-anchor='middle'>?</text></svg>` 
+                    logo: `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236c6c78'><text x='50%' y='65%' font-size='14' font-weight='bold' text-anchor='middle'>?</text></svg>` 
                 };
             }
             if (teamsDatabase[id]) {
                 if (!teamsDatabase[id].logo) {
                     const letter = teamsDatabase[id].name.charAt(0).toUpperCase();
-                    teamsDatabase[id].logo = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23525b62'><text x='50%' y='65%' font-size='12' font-weight='bold' text-anchor='middle'>${letter}</text></svg>`;
+                    teamsDatabase[id].logo = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236c6c78'><text x='50%' y='65%' font-size='12' font-weight='bold' text-anchor='middle'>${letter}</text></svg>`;
                 }
                 return teamsDatabase[id];
             }
-            return { content: [], name: "TBD", logo: `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232d3741'><text x='50%' y='65%' font-size='14' font-weight='bold' text-anchor='middle'>?</text></svg>` };
+            return { content: [], name: "TBD", logo: `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232a2a2e'><text x='50%' y='65%' font-size='14' font-weight='bold' text-anchor='middle'>?</text></svg>` };
         }
 
         function renderHub() {
@@ -724,13 +822,16 @@
                         <div class="card-major-name">${major.name}</div>
                         <div class="card-winner-zone">
                             ${imageOrQuestionHtml}
-                            <div class="card-winner-name" style="${isTbd ? 'color: var(--cs2-loser)' : ''}">${winnerTeam.name}</div>
+                            <div class="card-winner-name" style="${isTbd ? 'color: var(--faceit-text-dark)' : ''}">${winnerTeam.name}</div>
                         </div>
                         <div class="card-date-label">${major.date}</div>
                     </div>
                 `;
                 container.insertAdjacentHTML('beforeend', cardHtml);
             });
+
+            // Ensure visual hint properties initialize correctly right after cards load
+            setTimeout(evaluateScrollHints, 50);
         }
 
         function selectMajor(id) {
@@ -744,6 +845,8 @@
             window.activeMajorId = null;
             document.getElementById('bracket-view').classList.remove('active');
             document.getElementById('hub-view').classList.remove('hidden');
+            // Re-check alignment properties when coming back
+            setTimeout(evaluateScrollHints, 50);
         }
         
         function renderActiveBracket(id) {
@@ -853,15 +956,15 @@
                 champCol.innerHTML = `
                     <div class="champ-box" id="box-champion">
                         <div class="champ-title">champion</div>
-                        <img src="${winnerTeam.logo}" style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 12px;">
-                        <div class="team-name" style="font-size: 1.4rem; color: var(--cs2-accent);">${winnerTeam.name}</div>
+                        <img src="${winnerTeam.logo}" style="width: 70px; height: 70px; object-fit: contain; margin-bottom: 12px;">
+                        <div class="team-name" style="font-size: 1.2rem; color: var(--faceit-text-light); font-weight:700;">${winnerTeam.name}</div>
                     </div>
                 `;
             } else {
                 champCol.innerHTML = `
-                    <div class="champ-box" id="box-champion" style="border-color: #2d3741; background: #14181c;">
-                        <div class="champ-title" style="color: #525b62;">champion</div>
-                        <div style="font-size: 2.5rem; color: #2d3741; font-weight: bold; margin: 10px 0;">?</div>
+                    <div class="champ-box" id="box-champion" style="border-color: var(--faceit-border);">
+                        <div class="champ-title" style="color: var(--faceit-text-dark);">champion</div>
+                        <div style="font-size: 2rem; color: var(--faceit-text-dark); font-weight: 700; margin: 10px 0;">?</div>
                     </div>
                 `;
             }
@@ -897,9 +1000,9 @@
             canvas.height = wrapper.offsetHeight;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = '#2d3741'; 
-            const borderRadius = 6; 
+            ctx.lineWidth = 1; 
+            ctx.strokeStyle = '#3f3f46'; 
+            const borderRadius = 4; 
 
             const bracket = currentMajor.bracket;
             const wrapperRect = wrapper.getBoundingClientRect();
@@ -966,16 +1069,81 @@
             }
         }
 
+        /* NEW: Evaluates layout scrolling dimensions to handle mask visibility safely */
+        function evaluateScrollHints() {
+            const scrollZone = document.getElementById('scroll-zone');
+            const hintWrapper = document.getElementById('hint-wrapper');
+            if (!scrollZone || !hintWrapper) return;
+
+            const currentScroll = scrollZone.scrollLeft;
+            const maxScrollLeft = scrollZone.scrollWidth - scrollZone.clientWidth;
+
+            // Tolerance check handles scaling pixel variance across monitors safely
+            if (currentScroll > 2) {
+                hintWrapper.classList.add('can-scroll-left');
+            } else {
+                hintWrapper.classList.remove('can-scroll-left');
+            }
+
+            if (currentScroll < maxScrollLeft - 2 && maxScrollLeft > 0) {
+                hintWrapper.classList.add('can-scroll-right');
+            } else {
+                hintWrapper.classList.remove('can-scroll-right');
+            }
+        }
+
         function initWebsite() {
             renderHub();
 
+            const scrollZone = document.getElementById('scroll-zone');
+            
+            // Hardcode reset viewport to leftmost card index boundaries on application mount
+            scrollZone.scrollLeft = 0;
+
+            // HIGH-PERFORMANCE SMOOTH TRACKING LOGIC
+            let scrollVelocity = 0;
+            let activeAnimationId = null;
+
+            function runScrollInertiaFrame() {
+                if (Math.abs(scrollVelocity) > 0.1) {
+                    scrollZone.scrollBy({ left: scrollVelocity, behavior: 'auto' });
+                    scrollVelocity *= 0.82; // Velocity decay rate per frame tick
+                    activeAnimationId = requestAnimationFrame(runScrollInertiaFrame);
+                } else {
+                    scrollVelocity = 0;
+                    activeAnimationId = null;
+                }
+            }
+
+            scrollZone.addEventListener('wheel', (e) => {
+                if (e.deltaY !== 0) {
+                    e.preventDefault();
+                    
+                    // Boost scrolling velocity profile dynamically
+                    scrollVelocity += e.deltaY * 0.42;
+                    
+                    // Cap max frame shifting values to avoid display tearing artifacts
+                    if (scrollVelocity > 55) scrollVelocity = 55;
+                    if (scrollVelocity < -55) scrollVelocity = -55;
+
+                    if (!activeAnimationId) {
+                        activeAnimationId = requestAnimationFrame(runScrollInertiaFrame);
+                    }
+                }
+            }, { passive: false });
+
+            // Watch scrolling positions to instantly cycle fade overlay opacity states
+            scrollZone.addEventListener('scroll', evaluateScrollHints, { passive: true });
+
             const resizeObserver = new ResizeObserver(() => {
+                evaluateScrollHints();
                 if (window.activeMajorId) {
                     scaleBracket();
                     requestAnimationFrame(() => drawConnectors(window.activeMajorId));
                 }
             });
             resizeObserver.observe(document.getElementById('main-container'));
+            resizeObserver.observe(scrollZone);
         }
     </script>
 </body>
