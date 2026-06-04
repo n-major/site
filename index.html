@@ -584,6 +584,53 @@
             margin-bottom: 15px;
             font-weight: bold;
         }
+
+
+        .card-vertical-divider {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 450px; /* Matches your .major-vertical-card height exactly */
+            align-self: center;
+            padding: 0 15px; /* Creates breathing room between cards */
+        }
+
+        .card-vertical-divider::before,
+        .card-vertical-divider::after {
+            content: '';
+            flex: 1;
+            border-left: 2px dashed var(--cs2-border); /* Dashed vertical line using your theme variable */
+            transition: border-color 0.3s ease;
+        }
+
+        .card-vertical-divider::before {
+            margin-bottom: 15px; /* Space between top line and text */
+        }
+
+        .card-vertical-divider::after {
+            margin-top: 15px; /* Space between text and bottom line */
+        }
+
+        /* Hover effect synced with your design specs */
+        .card-vertical-divider:hover::before,
+        .card-vertical-divider:hover::after {
+            border-color: var(--cs2-accent);
+        }
+
+        .card-vertical-divider span {
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--cs2-text);
+            
+            /* Perfect Top-to-Bottom Rotation styling */
+            writing-mode: vertical-rl; 
+            transform: rotate(180deg); 
+            white-space: nowrap;
+            padding: 5px 0;
+        }
     </style>
 </head>
 <body>
@@ -660,6 +707,12 @@
             container.innerHTML = '';
             Object.keys(majorsDatabase).forEach(id => {
                 const major = majorsDatabase[id];
+                if (major.divider !== undefined && major.divider !== null) {
+                    container.insertAdjacentHTML('beforeend', `<div class="card-vertical-divider">
+                        <span>${major.divider}</span>
+                    </div>`);
+                    return;
+                }
                 const isTbd = major.winnerId.toLowerCase() === "tbd";
                 const winnerTeam = getTeam(major.winnerId);
                 let imageOrQuestionHtml = isTbd ? `<div class="card-tbd-logo">?</div>` : `<img src="${winnerTeam.logo}" class="card-winner-logo">`;
