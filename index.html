@@ -47,7 +47,6 @@
             padding: 12px 24px;
             font-size: 0.9rem;
             font-weight: 700;
-            text-transform: uppercase;
             letter-spacing: 1.5px;
             border-radius: 8px;
             cursor: pointer;
@@ -106,7 +105,6 @@
 
         .hub-subtitle {
             color: var(--cs2-accent);
-            text-transform: uppercase;
             letter-spacing: 8px;
             font-size: 1rem;
             margin-bottom: 50px;
@@ -203,14 +201,12 @@
         .card-winner-name {
             font-size: 1.5rem;
             font-weight: 900;
-            text-transform: uppercase;
             letter-spacing: 1px;
             color: var(--cs2-accent);
         }
 
         .card-date-label {
             font-size: 0.8rem;
-            text-transform: uppercase;
             letter-spacing: 1px;
             color: var(--cs2-text);
             font-weight: 700;
@@ -283,7 +279,6 @@
 
         .subtitle {
             color: var(--cs2-accent);
-            text-transform: uppercase;
             letter-spacing: 6px;
             font-size: 0.9rem;
             margin-bottom: 25px;
@@ -394,7 +389,7 @@
         }
         
         .team-logo { width: 32px; height: 32px; object-fit: contain; }
-        .team-name { font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .team-name { font-size: 1rem; font-weight: 700; letter-spacing: 0.5px; }
         
         .score-wrapper {
             display: flex;
@@ -586,7 +581,6 @@
             font-size: 0.85rem;
             color: var(--cs2-accent);
             letter-spacing: 3px;
-            text-transform: uppercase;
             margin-bottom: 15px;
             font-weight: bold;
         }
@@ -803,7 +797,7 @@
                 const winnerTeam = getTeam(winnerId);
                 champCol.innerHTML = `
                     <div class="champ-box" id="box-champion">
-                        <div class="champ-title">CHAMPION</div>
+                        <div class="champ-title">champion</div>
                         <img src="${winnerTeam.logo}" style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 12px;">
                         <div class="team-name" style="font-size: 1.4rem; color: var(--cs2-accent);">${winnerTeam.name}</div>
                     </div>
@@ -811,7 +805,7 @@
             } else {
                 champCol.innerHTML = `
                     <div class="champ-box" id="box-champion" style="border-color: #2d3741; background: #14181c;">
-                        <div class="champ-title" style="color: #525b62;">CHAMPION</div>
+                        <div class="champ-title" style="color: #525b62;">champion</div>
                         <div style="font-size: 2.5rem; color: #2d3741; font-weight: bold; margin: 10px 0;">?</div>
                     </div>
                 `;
