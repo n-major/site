@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting...</title>
+    <script>
+        const targetURL = "https://discord.gg/zm2UPepfz";
+        window.location.href = targetURL;
+        document.write(`<meta http-equiv="refresh" content="0; url=${targetURL}">`);
+    </script>
+</head>
+<body>
+    <noscript>
+        <meta http-equiv="refresh" content="0; url=https://www.example.com">
+    </noscript>
+
+    <div style="font-family: sans-serif; text-align: center; margin-top: 50px;">
+        <p>Redirecting... If not, click <a id="fallback-link" href="#">here</a>.</p>
+    </div>
+
+    <script>
+        document.getElementById('fallback-link').href = targetURL;
+    </script>
+</body>
+</html>
