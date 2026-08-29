@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Инструкция по установке и настройке AnyDesk на Android</title>
+  <style>
+    /* ==========================================================================
+       ПЕРЕМЕННЫЕ И ЦВЕТОВАЯ СХЕМА
+       ========================================================================== */
+    :root {
+      --primary: #ef4444;       /* Фирменный красный AnyDesk */
+      --primary-hover: #dc2626;
+      --primary-soft: #fee2e2;
+      --bg-body: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04);
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* ==========================================================================
+       БАЗОВЫЕ СТИЛИ
+       ========================================================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 60px;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* ==========================================================================
+       КОНТЕЙНЕР
+       ========================================================================== */
+    .container {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+
+    /* ==========================================================================
+       ШАПКА (HEADER)
+       ========================================================================== */
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #ffffff;
+      padding: 3rem 1.25rem 2.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      border-bottom: 4px solid var(--primary);
+    }
+
+    .badge-top {
+      display: inline-block;
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 0.35rem 0.9rem;
+      border-radius: 9999px;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+
+    header h1 {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 0.75rem;
+    }
+
+    header p {
+      color: #cbd5e1;
+      font-size: clamp(0.95rem, 2vw, 1.15rem);
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* ==========================================================================
+       КАРТОЧКИ ШАГОВ
+       ========================================================================== */
+    .step-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      padding: 1.75rem;
+      margin-bottom: 1.75rem;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.2s ease;
+    }
+
+    .step-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .step-number {
+      background: var(--primary);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 1.1rem;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    /* ==========================================================================
+       БЛОКИ КАРТИНОК И МЕДИА
+       ========================================================================== */
+    .image-block {
+      margin-top: 1.25rem;
+      background: #f1f5f9;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .image-block img {
+      width: 100%;
+      max-height: 420px;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .image-caption {
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* 2 колонки для десктопа: Текст слева, Картинка справа */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      align-items: center;
+      margin-top: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .two-col {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* ==========================================================================
+       ТЕКСТОВЫЕ КАРТОЧКИ И ПРЕДУПРЕЖДЕНИЯ
+       ========================================================================== */
+    .text-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .text-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.6rem;
+      color: var(--text-main);
+    }
+
+    .callout {
+      padding: 1.25rem 1.5rem;
+      border-radius: var(--radius-md);
+      margin: 1.5rem 0;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .callout-warning {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+    }
+
+    .callout-info {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e40af;
+    }
+
+    .callout-danger {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+    }
+
+    .callout-icon {
+      font-size: 1.5rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    /* ==========================================================================
+       КНОПКИ
+       ========================================================================== */
+    .download-btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.4rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      text-decoration: none;
+      color: #ffffff;
+    }
+
+    /* ==========================================================================
+       БЛОК С 9-ЗНАЧНЫМ ID КОДОМ
+       ========================================================================== */
+    .desk-id-box {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: monospace;
+      font-size: 1.5rem;
+      font-weight: 700;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-sm);
+      display: inline-block;
+      letter-spacing: 2px;
+      margin: 0.5rem 0;
+    }
+
+    /* ==========================================================================
+       ПОДВАЛ (FOOTER)
+       ========================================================================== */
+    footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-color);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       ШАПКА САЙТА
+       ========================================================================== -->
+  <header>
+    <div class="badge-top">Руководство по удаленному доступу</div>
+    <h1>Как настроить AnyDesk на Android</h1>
+    <p>Пошаговая инструкция по установке приложения, плагина управления и предоставлению необходимых разрешений.</p>
+  </header>
+
+  <div class="container">
+
+    <!-- ==========================================================================
+         ВАЖНОЕ ПРЕДУПРЕЖДЕНИЕ О БЕЗОПАСНОСТИ
+         ========================================================================== -->
+    <div class="callout callout-danger">
+      <span class="callout-icon">⚠️</span>
+      <div>
+        <strong>Предостережение о безопасности:</strong>
+        Никогда не сообщайте номер своего рабочего места и не подтверждайте доступ неизвестным лицам или подозрительным «сотрудникам поддержки». Через AnyDesk можно видеть всё происходящее на вашем экране.
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+         ОСНОВНЫЕ ШАГИ (ANDROID)
+         ========================================================================== -->
+    <main>
+
+      <!-- Шаг 1 -->
+      <article class="step-card">
+        <div class="step-header">
+          <div class="step-number">1</div>
+          <h2 class="step-title">Установка AnyDesk из Google Play</h2>
+        </div>
+        <p>Откройте приложение <strong>Google Play</strong> и в поиске введите "AnyDesk".</p>
+        
+        <div class="download-btn-group">
+          <a href="https://play.google.com/store/apps/details?id=com.anydesk.anydeskandroid" target="_blank" rel="noopener" class="btn btn-primary">
+            Открыть AnyDesk в Google Play ↗
+          </a>
+        </div>
+
+        <!-- КАРТИНКА К ШАГУ 1 -->
+        <div class="image-block">
+          <img src="a_img.jpg" alt="AnyDesk в Google Play" />
+          <div class="image-caption">
+            📷 <span>Ищите официальное приложение «AnyDesk — удалённый доступ».</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Шаг 2 -->
+      <article class="step-card">
+        <div class="step-header">
+          <div class="step-number">2</div>
+          <h2 class="step-title">Установка плагина AD1</h2>
+        </div>
+        <div class="two-col">
+          <div>
+            <p>Чтобы мы могли не только видеть экран, но и управлять, скачайте этот плагин:</p>
+            <br>
+            <p>
+              1. Откройте приложение AnyDesk.<br>
+              2. Нажмите <strong>ОК</strong>.<br>
+              3. Пролистайте вниз и нажмите на <strong>"Install!"</strong> возле "Plugin AD1".<br>
+              4. Нажмите кнопку установки в Google Play.
+            </p>
+          </div>
+          
+          <!-- КАРТИНКА К ШАГУ 2 -->
+          <div class="image-block">
+            <img src="a_img2.jfif" alt="Установка плагина AD1" />
+            <div class="image-caption">
+              📷 <span>Кнопка «Install!» напротив Plugin AD1.</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Шаг 3 -->
+      <article class="step-card">
+        <div class="step-header">
+          <div class="step-number">3</div>
+          <h2 class="step-title">Настройки разрешений</h2>
+        </div>
+        <div class="two-col">
+          <div>
+            <p>Необходимо предоставить разрешение службе управления:</p>
+            <br>
+            <p>
+              1. Зайдите обратно в AnyDesk.<br>
+              2. Около той же кнопки нажмите <strong>"Consent!"</strong>.<br>
+              3. Подтвердите и нажмите <strong>"Activate!"</strong>.<br>
+              4. Выберите <strong>"AnyDesk Control Service AD1"</strong> и разрешите доступ.
+            </p>
+          </div>
+          
+          <!-- КАРТИНКА К ШАГУ 3 -->
+          <div class="image-block">
+            <img src="a_img3.jfif" alt="Активация службы AD1" />
+            <div class="image-caption">
+              📷 <span>Включение службы в Спец. возможностях.</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Шаг 4 -->
+      <article class="step-card">
+        <div class="step-header">
+          <div class="step-number">4</div>
+          <h2 class="step-title">Передача номера</h2>
+        </div>
+        <p>Откройте главное меню AnyDesk. В верхней части в блоке <strong>«Это рабочее место»</strong> отображается ваш личный 9-значный код:</p>
+        
+        <div style="text-align: center; margin: 1rem 0;">
+          <div class="desk-id-box">123 456 789</div>
+        </div>
+
+        <p>Продиктуйте этот номер специалисту. Когда на экране появится запрос на подключение, нажмите <strong>«Принять»</strong> и подтвердите старт записи экрана.</p>
+      </article>
+
+    </main>
+
+    <!-- ==========================================================================
+         ДОПОЛНИТЕЛЬНЫЕ БЛОКИ (ТЕКСТ И КАРТИНКИ)
+         ========================================================================== -->
+    <section style="margin-top: 3rem;">
+      <h2 style="font-size: 1.5rem; margin-bottom: 1rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem;">
+        📝 Дополнительная информация и заметки
+      </h2>
+
+      <!-- [ПРИМЕР 1: ПРОСТОЙ ТЕКСТ] -->
+      <div class="text-card">
+        <h3>Как завершить сеанс связи</h3>
+        <p>Вы можете прервать удаленный доступ в любой момент. Для этого нажмите на плавающий красный значок AnyDesk и выберите <strong>«Отключить»</strong> (красный крестик), либо просто полностью закройте приложение из панели запущенных программ.</p>
+      </div>
+
+      <!-- [ПРИМЕР 3: БЛОК-ПРЕДУПРЕЖДЕНИЕ / СОВЕТ] -->
+      <div class="callout callout-warning">
+        <span class="callout-icon">💡</span>
+        <div>
+          <strong>Важно:</strong> Убедитесь, что ваш телефон подключен к стабильной сети Wi-Fi или 4G/5G для плавного управления без задержек.
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         ПОДВАЛ
+         ========================================================================== -->
+    <footer>
+      <p>&copy; 2026 Руководство по настройке AnyDesk на Android.</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
