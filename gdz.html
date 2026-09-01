@@ -3,25 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>ГДЗ Класса — Решения и Варианты</title>
+  <title>ГДЗ ЕФУ</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'] },
-          colors: {
-            vk: {
-              50: '#ebf2fa', 100: '#dbe8f6', 500: '#2d81e0', 600: '#0077ff', 700: '#0066dc',
-              bg: '#f0f2f5', border: '#e1e3e6', text: '#222222', muted: '#6f7985'
+    if (typeof tailwind !== 'undefined') {
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'] },
+            colors: {
+              vk: {
+                50: '#ebf2fa', 100: '#dbe8f6', 500: '#2d81e0', 600: '#0077ff', 700: '#0066dc',
+                bg: '#f0f2f5', border: '#e1e3e6', text: '#222222', muted: '#6f7985'
+              }
             }
           }
         }
-      }
+      };
     }
   </script>
 
@@ -44,8 +46,8 @@
         </div>
         <div>
           <h1 class="font-bold text-sm leading-tight text-vk-text flex items-center gap-1.5">
-            ГДЗ Нашего Класса
-            <span id="syncStatusBadge" class="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold px-1.5 py-0.2 rounded">Загрузка...</span>
+            ГДЗ ЕФУ
+            <span id="syncStatusBadge" class="text-[10px] bg-slate-100 text-slate-700 border border-slate-200 font-semibold px-1.5 py-0.2 rounded">Загрузка...</span>
           </h1>
           <p class="text-[11px] text-vk-muted hidden sm:block">Только реальные задания от учителей</p>
         </div>
@@ -99,7 +101,7 @@
       <div class="flex items-center justify-between bg-amber-50 border border-amber-200/70 px-3 py-2 rounded-lg text-xs">
         <div class="flex items-center gap-2 text-amber-900 font-medium">
           <i class="fa-solid fa-shield-halved text-amber-600 text-sm"></i>
-          <span><b>Анти-Палево:</b> выбирайте разные варианты решений, чтобы учитель не заподозрил весь класс.</span>
+          <span><b>Важно:</b> выбирайте разные варианты решений, чтобы учитель не заподозрил весь класс.</span>
         </div>
       </div>
 
@@ -138,7 +140,7 @@
         <i class="fa-solid fa-download"></i> Скачать tasks.json
       </button>
     </div>
-    <p class="text-[11px] text-vk-muted/80">Задания загружаются напрямую из файла tasks.json вашего репозитория.</p>
+    <p class="text-[11px] text-vk-muted/80">Задания загружаются напрямую из файла tasks.json.</p>
   </footer>
 
   <!-- МОДАЛКА: ПРОСМОТР РЕШЕНИЯ -->
@@ -238,7 +240,7 @@
               <option value="Химия">Химия</option>
               <option value="Английский">Английский</option>
               <option value="История">История</option>
-              <option value="Общество">Обществознание</option>
+              <option value="Обществознание">Обществознание</option>
               <option value="Биология">Биология</option>
               <option value="Информатика">Информатика</option>
               <option value="География">География</option>
@@ -294,7 +296,7 @@
     </div>
   </div>
 
-  <!-- ОКНО ПОСЛЕ СОХРАНЕНИЯ (С ИНСТРУКЦИЕЙ) -->
+  <!-- ОКНО ПОСЛЕ СОХРАНЕНИЯ -->
   <div id="saveSuccessModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-2xl p-5 shadow-2xl space-y-4 text-xs">
       <div class="flex items-center gap-3">
@@ -330,57 +332,151 @@
   </div>
 
   <script>
-    // ССЫЛКА НА ВАШ ФАЙЛ С ЗАДАЧАМИ (ОТКУДА БРАТЬ ДАННЫЕ)
-    // По умолчанию ищет tasks.json в том же репозитории рядом с index.html
-    const TASKS_SOURCE_URL = 'https://nmajor.pro/tasks.json';
-
+    // Настройки
+    const TASKS_SOURCE_URL = 'tasks.json'; // Ищет tasks.json рядом со страницей или на вашем сервере
+    const REMOTE_BACKUP_URL = 'https://nmajor.pro/tasks.json';
     const ADMIN_PIN = "1234";
     let isAdminUnlocked = false;
 
+    // Безопасное чтение/запись в LocalStorage (не роняет скрипт)
+    function safeStorageGet(key, fallback = null) {
+      try {
+        const val = localStorage.getItem(key);
+        return val ? JSON.parse(val) : fallback;
+      } catch (e) {
+        console.warn('LocalStorage недоступен:', e);
+        return fallback;
+      }
+    }
+
+    function safeStorageSet(key, value) {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch (e) {
+        console.warn('Не удалось записать в LocalStorage:', e);
+      }
+    }
+
+    // Универсальное копирование текста в буфер (работает везде)
+    function safeCopyText(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text);
+      } else {
+        return new Promise((resolve, reject) => {
+          const textarea = document.createElement('textarea');
+          textarea.value = text;
+          textarea.style.position = 'fixed';
+          textarea.style.left = '-9999px';
+          document.body.appendChild(textarea);
+          textarea.select();
+          try {
+            document.execCommand('copy');
+            textarea.remove();
+            resolve();
+          } catch (err) {
+            textarea.remove();
+            reject(err);
+          }
+        });
+      }
+    }
+
+    // Начальные тестовые данные
+    const DEFAULT_DEMO_TASKS = [
+      {
+        id: "demo-1",
+        subject: "Алгебра",
+        dueDate: new Date().toISOString().split('T')[0],
+        title: "№ 12.4 (а, б)",
+        book: "Мерзляк 10 класс",
+        condition: "Решите показательное уравнение:\nа) 2^(x+2) - 2^x = 96\nб) 3^(x+1) + 3^x = 108",
+        variants: [
+          {
+            name: "Краткий (через вынесение)",
+            note: "Быстрое оформление, минимум слов",
+            steps: "а) 2^x * (2^2 - 1) = 96\n2^x * 3 = 96\n2^x = 32\n2^x = 2^5\nx = 5\n\nб) 3^x * (3 + 1) = 108\n3^x * 4 = 108\n3^x = 27\nx = 3",
+            answer: "а) x = 5; б) x = 3"
+          },
+          {
+            name: "Развёрнутый (с пояснениями)",
+            note: "Хорошо для придирчивого учителя",
+            steps: "а) Вынесем общий множитель 2^x за скобки:\n2^x * (4 - 1) = 96\n2^x * 3 = 96\nРазделим обе части на 3:\n2^x = 32\nПредставим 32 как степень двойки: 32 = 2^5\nx = 5\n\nб) Аналогично выносим 3^x:\n3^x * (3 + 1) = 108 => 3^x = 27 => x = 3",
+            answer: "а) 5; б) 3"
+          }
+        ]
+      }
+    ];
+
     let tasks = [];
-    let completedList = JSON.parse(localStorage.getItem('my_class_completed')) || [];
+    let completedList = safeStorageGet('my_class_completed', []) || [];
     let activeSubject = 'Все';
     let activeStatus = 'all';
-
     let currentViewingTask = null;
     let activeVariantIdx = 0;
 
-    // ЗАГРУЗКА ЗАДАНИЙ С GITHUB (БЕЗ ТОКЕНОВ И ПАРОЛЕЙ)
+    // ЗАГРУЗКА ЗАДАНИЙ
     async function loadGlobalTasks(manualClick = false) {
       const badge = document.getElementById('syncStatusBadge');
       const icon = document.getElementById('refreshIcon');
       if (icon) icon.classList.add('fa-spin');
-      badge.className = "text-[10px] bg-blue-50 text-blue-700 border border-blue-200 font-semibold px-1.5 py-0.2 rounded";
-      badge.innerText = "Загрузка...";
-
-      try {
-        // Добавляем ?_t=timestamp, чтобы GitHub Pages не отдавал старый кэш
-        const response = await fetch(`${TASKS_SOURCE_URL}?_t=${Date.now()}`);
-        if (!response.ok) throw new Error('Файл tasks.json не найден');
-        
-        const data = await response.json();
-        if (Array.isArray(data)) {
-          tasks = data;
-          localStorage.setItem('cached_tasks', JSON.stringify(tasks));
-          badge.className = "text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold px-1.5 py-0.2 rounded";
-          badge.innerText = "Онлайн (GitHub)";
-        }
-      } catch (err) {
-        console.warn("tasks.json не загрузился, используем кэш:", err);
-        tasks = JSON.parse(localStorage.getItem('cached_tasks')) || [];
-        badge.className = "text-[10px] bg-amber-50 text-amber-800 border border-amber-200 font-semibold px-1.5 py-0.2 rounded";
-        badge.innerText = "Офлайн-режим";
-      } finally {
-        if (icon) icon.classList.remove('fa-spin');
-        renderSubjectFilters();
-        renderTasks();
-        if (manualClick) alert("Задания обновлены!");
+      
+      if (badge) {
+        badge.className = "text-[10px] bg-blue-50 text-blue-700 border border-blue-200 font-semibold px-1.5 py-0.2 rounded";
+        badge.innerText = "Загрузка...";
       }
+
+      let loadedSuccessfully = false;
+
+      // 1. Пробуем загрузить tasks.json
+      const urlsToTry = [TASKS_SOURCE_URL, REMOTE_BACKUP_URL];
+      
+      for (const url of urlsToTry) {
+        try {
+          const response = await fetch(`${url}?_t=${Date.now()}`);
+          if (!response.ok) continue;
+          const data = await response.json();
+          if (Array.isArray(data) && data.length > 0) {
+            tasks = data;
+            safeStorageSet('cached_tasks', tasks);
+            if (badge) {
+              badge.className = "text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold px-1.5 py-0.2 rounded";
+              badge.innerText = "Онлайн";
+            }
+            loadedSuccessfully = true;
+            break;
+          }
+        } catch (e) {
+          // Идем к следующему источнику
+        }
+      }
+
+      // 2. Если онлайн не загрузился — берем кэш или демо-данные
+      if (!loadedSuccessfully) {
+        const cached = safeStorageGet('cached_tasks', null);
+        if (Array.isArray(cached) && cached.length > 0) {
+          tasks = cached;
+        } else {
+          tasks = DEFAULT_DEMO_TASKS;
+        }
+        if (badge) {
+          badge.className = "text-[10px] bg-amber-50 text-amber-800 border border-amber-200 font-semibold px-1.5 py-0.2 rounded";
+          badge.innerText = "Локально";
+        }
+      }
+
+      if (icon) icon.classList.remove('fa-spin');
+      renderSubjectFilters();
+      renderTasks();
+      // if (manualClick) alert(loadedSuccessfully ? "Задания обновлены с сервера!" : "Работаем в локальном режиме.");
     }
 
     function renderSubjectFilters() {
-      const subjects = ['Все', ...new Set(tasks.map(t => t.subject))];
       const container = document.getElementById('subjectFilterBar');
+      if (!container) return;
+      
+      const subjectsList = Array.isArray(tasks) ? tasks.map(t => t.subject).filter(Boolean) : [];
+      const subjects = ['Все', ...new Set(subjectsList)];
+      
       container.innerHTML = subjects.map(sub => {
         const isCurrent = activeSubject === sub;
         return `
@@ -403,65 +499,82 @@
       activeStatus = st;
       ['all', 'active', 'done'].forEach(tab => {
         const btn = document.getElementById(`status-${tab}`);
-        if (tab === st) {
-          btn.className = 'px-2.5 py-1 rounded-md text-vk-text bg-white shadow-xs font-semibold';
-        } else {
-          btn.className = 'px-2.5 py-1 rounded-md hover:text-vk-text';
+        if (btn) {
+          if (tab === st) {
+            btn.className = 'px-2.5 py-1 rounded-md text-vk-text bg-white shadow-xs font-semibold';
+          } else {
+            btn.className = 'px-2.5 py-1 rounded-md hover:text-vk-text';
+          }
         }
       });
       renderTasks();
     }
 
     function syncAndSearch(val) {
-      document.getElementById('searchInput').value = val;
+      const searchDesktop = document.getElementById('searchInput');
+      if (searchDesktop) searchDesktop.value = val;
       renderTasks();
     }
 
     function renderTasks() {
       const grid = document.getElementById('tasksGrid');
       const emptyView = document.getElementById('emptyView');
-      const search = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+      if (!grid) return;
 
-      const filtered = tasks.filter(t => {
+      const searchInput = document.getElementById('searchInput');
+      const searchMobile = document.getElementById('searchInputMobile');
+      const search = ((searchInput ? searchInput.value : '') || (searchMobile ? searchMobile.value : '')).toLowerCase().trim();
+
+      const currentTasks = Array.isArray(tasks) ? tasks : [];
+      const filtered = currentTasks.filter(t => {
         const matchSub = activeSubject === 'Все' || t.subject === activeSubject;
         const isDone = completedList.includes(t.id);
         const matchStatus = activeStatus === 'all' || (activeStatus === 'done' && isDone) || (activeStatus === 'active' && !isDone);
-        const matchSearch = t.title.toLowerCase().includes(search) || 
+        const matchSearch = (t.title && t.title.toLowerCase().includes(search)) || 
                             (t.condition && t.condition.toLowerCase().includes(search)) ||
                             (t.book && t.book.toLowerCase().includes(search));
         return matchSub && matchStatus && matchSearch;
       });
 
-      document.getElementById('tasksCountLabel').innerText = `${filtered.length} заданий`;
+      const countLabel = document.getElementById('tasksCountLabel');
+      if (countLabel) countLabel.innerText = `${filtered.length} заданий`;
 
       if (filtered.length === 0) {
         grid.innerHTML = '';
-        emptyView.classList.remove('hidden');
+        if (emptyView) emptyView.classList.remove('hidden');
         return;
       }
 
-      emptyView.classList.add('hidden');
+      if (emptyView) emptyView.classList.add('hidden');
       grid.innerHTML = filtered.map(t => {
         const isDone = completedList.includes(t.id);
         const variantsCount = t.variants ? t.variants.length : 1;
 
-        const due = new Date(t.dueDate);
-        const today = new Date();
-        today.setHours(0,0,0,0);
-        const diffDays = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
-
-        let badgeText = t.dueDate;
+        let badgeText = t.dueDate || 'Без срока';
         let badgeColor = 'bg-slate-100 text-slate-600';
-        if (diffDays === 0) {
-          badgeText = 'Сдать сегодня!';
-          badgeColor = 'bg-amber-100 text-amber-900 font-bold border border-amber-200';
-        } else if (diffDays === 1) {
-          badgeText = 'Сдать завтра';
-          badgeColor = 'bg-blue-50 text-blue-800 font-medium border border-blue-100';
-        } else if (diffDays < 0) {
-          badgeText = 'Просрочено';
-          badgeColor = 'bg-rose-50 text-rose-700 font-medium';
+
+        if (t.dueDate) {
+          // Парсим дату локально (без сдвига UTC)
+          const [y, m, d] = t.dueDate.split('-').map(Number);
+          const due = new Date(y, m - 1, d);
+          
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+
+          const diffDays = Math.round((due - today) / (1000 * 60 * 60 * 24));
+
+          if (diffDays === 0) {
+            badgeText = 'Сдать сегодня!';
+            badgeColor = 'bg-amber-100 text-amber-900 font-bold border border-amber-200';
+          } else if (diffDays === 1) {
+            badgeText = 'Сдать завтра';
+            badgeColor = 'bg-blue-50 text-blue-800 font-medium border border-blue-100';
+          } else if (diffDays < 0) {
+            badgeText = 'Просрочено';
+            badgeColor = 'bg-rose-50 text-rose-700 font-medium';
+          }
         }
+
 
         return `
           <div class="bg-white border border-vk-border rounded-xl p-4 vk-shadow flex flex-col justify-between transition hover:border-vk-500/50 ${isDone ? 'opacity-60' : ''}">
@@ -470,13 +583,13 @@
                 <div>
                   <div class="flex items-center gap-1.5 flex-wrap">
                     <span class="text-[10px] font-bold uppercase tracking-wide bg-vk-50 text-vk-600 px-2 py-0.5 rounded border border-vk-100">
-                      ${t.subject}
+                      ${t.subject || 'Задание'}
                     </span>
                     <span class="text-[11px] ${badgeColor} px-2 py-0.5 rounded">
                       <i class="fa-regular fa-clock mr-1"></i>${badgeText}
                     </span>
                   </div>
-                  <h3 class="font-bold text-sm text-vk-text mt-1.5">${t.title}</h3>
+                  <h3 class="font-bold text-sm text-vk-text mt-1.5">${t.title || 'Без номера'}</h3>
                   ${t.book ? `<p class="text-[11px] text-vk-muted font-normal">${t.book}</p>` : ''}
                 </div>
 
@@ -519,17 +632,18 @@
       } else {
         completedList.push(id);
       }
-      localStorage.setItem('my_class_completed', JSON.stringify(completedList));
+      safeStorageSet('my_class_completed', completedList);
       renderTasks();
     }
 
     function deleteTask(id) {
-      if (!confirm("Удалить это задание из списка?")) return;
+      if (!confirm("Удалить это задание?")) return;
       tasks = tasks.filter(t => t.id !== id);
-      localStorage.setItem('cached_tasks', JSON.stringify(tasks));
+      safeStorageSet('cached_tasks', tasks);
       renderSubjectFilters();
       renderTasks();
-      document.getElementById('saveSuccessModal').classList.remove('hidden');
+      const modal = document.getElementById('saveSuccessModal');
+      if (modal) modal.classList.remove('hidden');
     }
 
     // ПРОСМОТР РЕШЕНИЯ
@@ -540,8 +654,8 @@
       currentViewingTask = task;
       activeVariantIdx = 0;
 
-      document.getElementById('modalSubjectBadge').innerText = task.subject;
-      document.getElementById('modalTaskTitle').innerText = task.title + (task.book ? ` (${task.book})` : '');
+      document.getElementById('modalSubjectBadge').innerText = task.subject || '';
+      document.getElementById('modalTaskTitle').innerText = (task.title || '') + (task.book ? ` (${task.book})` : '');
       document.getElementById('modalTaskCondition').innerText = task.condition || 'Условие задачи не указано.';
 
       renderModalVariants();
@@ -559,8 +673,13 @@
       document.getElementById('viewModal').classList.remove('hidden');
     }
 
+    function closeViewModal() {
+      document.getElementById('viewModal').classList.add('hidden');
+    }
+
     function renderModalVariants() {
       const tabs = document.getElementById('modalVariantTabs');
+      if (!tabs || !currentViewingTask) return;
       const variants = currentViewingTask.variants || [];
       tabs.innerHTML = variants.map((v, i) => `
         <button onclick="setModalVariant(${i})" class="px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
@@ -578,6 +697,199 @@
     }
 
     function selectRandomVariant() {
-      if (!currentViewingTask.variants || currentViewingTask.variants.length <= 1) return;
+      if (!currentViewingTask || !currentViewingTask.variants || currentViewingTask.variants.length <= 1) return;
       const r = Math.floor(Math.random() * currentViewingTask.variants.length);
-      se
+      setModalVariant(r);
+    }
+
+    function loadModalVariantData() {
+      if (!currentViewingTask) return;
+      const variant = (currentViewingTask.variants && currentViewingTask.variants[activeVariantIdx]) || {};
+      const noteEl = document.getElementById('modalVariantNote');
+      
+      if (variant.note) {
+        noteEl.innerText = `💡 Примечание: ${variant.note}`;
+        noteEl.classList.remove('hidden');
+      } else {
+        noteEl.classList.add('hidden');
+      }
+
+      document.getElementById('modalVariantSteps').innerText = variant.steps || 'Ход решения не заполнен.';
+      document.getElementById('modalFinalAnswer').innerText = variant.answer || 'Ответ не указан.';
+    }
+
+    function copyAnswer() {
+      if (!currentViewingTask) return;
+      const variant = (currentViewingTask.variants && currentViewingTask.variants[activeVariantIdx]) || {};
+      const text = variant.answer || document.getElementById('modalFinalAnswer').innerText;
+      
+      safeCopyText(text).then(() => {
+        const btn = document.getElementById('copyBtn');
+        const oldHtml = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> <span>Скопировано!</span>';
+        setTimeout(() => { btn.innerHTML = oldHtml; }, 2000);
+      }).catch(() => {
+        alert("Не удалось скопировать ответ");
+      });
+    }
+
+    // АДМИНКА / ДОБАВЛЕНИЕ ДЗ
+    function openAdminModal() {
+      const modal = document.getElementById('adminModal');
+      modal.classList.remove('hidden');
+      if (isAdminUnlocked) {
+        showAdminForm();
+      } else {
+        document.getElementById('pinScreen').classList.remove('hidden');
+        document.getElementById('adminForm').classList.add('hidden');
+        const pinInp = document.getElementById('adminPinInput');
+        pinInp.value = '';
+        setTimeout(() => pinInp.focus(), 100);
+      }
+    }
+
+    function closeAdminModal() {
+      document.getElementById('adminModal').classList.add('hidden');
+    }
+
+    function verifyPin() {
+      const input = document.getElementById('adminPinInput').value;
+      if (input === ADMIN_PIN) {
+        isAdminUnlocked = true;
+        showAdminForm();
+        renderTasks();
+      } else {
+        alert("Неверный PIN! (Стандартный: 1234)");
+      }
+    }
+
+    function showAdminForm() {
+      document.getElementById('pinScreen').classList.add('hidden');
+      const form = document.getElementById('adminForm');
+      form.classList.remove('hidden');
+      
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const yyyy = tomorrow.getFullYear();
+      const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+      const dd = String(tomorrow.getDate()).padStart(2, '0');
+      document.getElementById('taskDueDate').value = `${yyyy}-${mm}-${dd}`;
+
+      if (document.getElementById('variantsContainer').children.length === 0) {
+        addVariantInput({ name: "Вариант 1 (Стандартный)", note: "", steps: "", answer: "" });
+      }
+    }
+
+    function addVariantInput(data = null) {
+      const container = document.getElementById('variantsContainer');
+      const count = container.children.length + 1;
+      const wrap = document.createElement('div');
+      wrap.className = "bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2 variant-block relative";
+      wrap.innerHTML = `
+        <div class="flex items-center justify-between">
+          <input type="text" class="var-name font-bold bg-white border border-slate-200 rounded px-2 py-1 text-xs w-2/3" placeholder="Название (напр. Краткий)" value="${data ? data.name : 'Вариант ' + count}">
+          ${count > 1 ? `<button type="button" onclick="this.closest('.variant-block').remove()" class="text-rose-500 hover:text-rose-700 text-xs">Удалить</button>` : ''}
+        </div>
+        <input type="text" class="var-note w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs" placeholder="Примечание (напр. 'без сокращений')" value="${data ? data.note : ''}">
+        <textarea class="var-steps w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs" rows="3" placeholder="Ход решения..." required>${data ? data.steps : ''}</textarea>
+        <input type="text" class="var-answer w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs font-semibold" placeholder="Итоговый ответ" required value="${data ? data.answer : ''}">
+      `;
+      container.appendChild(wrap);
+    }
+
+    async function handleSaveTask(e) {
+      e.preventDefault();
+
+      const varBlocks = document.querySelectorAll('.variant-block');
+      const variants = Array.from(varBlocks).map(b => ({
+        name: b.querySelector('.var-name').value.trim(),
+        note: b.querySelector('.var-note').value.trim(),
+        steps: b.querySelector('.var-steps').value.trim(),
+        answer: b.querySelector('.var-answer').value.trim(),
+      }));
+
+      let photoData = "";
+      const fileInput = document.getElementById('taskPhotoFile');
+      if (fileInput && fileInput.files && fileInput.files[0]) {
+        photoData = await readFileAsBase64(fileInput.files[0]);
+      }
+
+      const newTask = {
+        id: 'task_' + Date.now(),
+        subject: document.getElementById('taskSubject').value,
+        dueDate: document.getElementById('taskDueDate').value,
+        title: document.getElementById('taskTitle').value.trim(),
+        book: document.getElementById('taskBook').value.trim(),
+        condition: document.getElementById('taskCondition').value.trim(),
+        photo: photoData,
+        variants: variants
+      };
+
+      tasks.unshift(newTask);
+      safeStorageSet('cached_tasks', tasks);
+      
+      closeAdminModal();
+      renderSubjectFilters();
+      renderTasks();
+
+      document.getElementById('saveSuccessModal').classList.remove('hidden');
+    }
+
+    function readFileAsBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function copyJsonToClipboard() {
+      const jsonStr = JSON.stringify(tasks, null, 2);
+      safeCopyText(jsonStr).then(() => {
+        const btn = document.getElementById('copyJsonCodeBtn');
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> <span>Скопировано в буфер!</span>';
+        setTimeout(() => {
+          btn.innerHTML = '<i class="fa-regular fa-copy"></i> <span>Скопировать JSON</span>';
+        }, 2000);
+      });
+    }
+
+    function downloadJsonFile() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(tasks, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "tasks.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    // Привязываем функции к window для 100% доступности в inline HTML
+    window.loadGlobalTasks = loadGlobalTasks;
+    window.setSubjectFilter = setSubjectFilter;
+    window.setStatusFilter = setStatusFilter;
+    window.syncAndSearch = syncAndSearch;
+    window.renderTasks = renderTasks;
+    window.toggleDone = toggleDone;
+    window.deleteTask = deleteTask;
+    window.openViewModal = openViewModal;
+    window.closeViewModal = closeViewModal;
+    window.setModalVariant = setModalVariant;
+    window.selectRandomVariant = selectRandomVariant;
+    window.copyAnswer = copyAnswer;
+    window.openAdminModal = openAdminModal;
+    window.closeAdminModal = closeAdminModal;
+    window.verifyPin = verifyPin;
+    window.addVariantInput = addVariantInput;
+    window.handleSaveTask = handleSaveTask;
+    window.copyJsonToClipboard = copyJsonToClipboard;
+    window.downloadJsonFile = downloadJsonFile;
+
+    // Старт при загрузке DOM
+    document.addEventListener('DOMContentLoaded', () => {
+      loadGlobalTasks();
+    });
+  </script>
+</body>
+</html>
