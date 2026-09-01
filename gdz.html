@@ -382,30 +382,7 @@
     }
 
     // Начальные тестовые данные
-    const DEFAULT_DEMO_TASKS = [
-      {
-        id: "demo-1",
-        subject: "Алгебра",
-        dueDate: new Date().toISOString().split('T')[0],
-        title: "№ 12.4 (а, б)",
-        book: "Мерзляк 10 класс",
-        condition: "Решите показательное уравнение:\nа) 2^(x+2) - 2^x = 96\nб) 3^(x+1) + 3^x = 108",
-        variants: [
-          {
-            name: "Краткий (через вынесение)",
-            note: "Быстрое оформление, минимум слов",
-            steps: "а) 2^x * (2^2 - 1) = 96\n2^x * 3 = 96\n2^x = 32\n2^x = 2^5\nx = 5\n\nб) 3^x * (3 + 1) = 108\n3^x * 4 = 108\n3^x = 27\nx = 3",
-            answer: "а) x = 5; б) x = 3"
-          },
-          {
-            name: "Развёрнутый (с пояснениями)",
-            note: "Хорошо для придирчивого учителя",
-            steps: "а) Вынесем общий множитель 2^x за скобки:\n2^x * (4 - 1) = 96\n2^x * 3 = 96\nРазделим обе части на 3:\n2^x = 32\nПредставим 32 как степень двойки: 32 = 2^5\nx = 5\n\nб) Аналогично выносим 3^x:\n3^x * (3 + 1) = 108 => 3^x = 27 => x = 3",
-            answer: "а) 5; б) 3"
-          }
-        ]
-      }
-    ];
+    const DEFAULT_DEMO_TASKS = [];
 
     let tasks = [];
     let completedList = safeStorageGet('my_class_completed', []) || [];
@@ -432,7 +409,7 @@
       
       for (const url of urlsToTry) {
         try {
-          const response = await fetch(`${url}`);
+          const response = await fetch(`${url}?_t=${Date.now()}`);
           if (!response.ok) continue;
           const data = await response.json();
           if (Array.isArray(data) && data.length > 0) {
