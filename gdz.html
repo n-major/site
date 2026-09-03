@@ -691,8 +691,8 @@
         noteEl.classList.add('hidden');
       }
 
-      document.getElementById('modalVariantSteps').innerText = variant.steps || 'Ход решения не заполнен.';
-      document.getElementById('modalFinalAnswer').innerText = variant.answer || 'Ответ не указан.';
+      document.getElementById('modalVariantSteps').innerHTML = variant.steps || 'Ход решения не заполнен.';
+      document.getElementById('modalFinalAnswer').innerHTML = variant.answer || 'Ответ не указан.';
     }
 
     function copyAnswer() {
